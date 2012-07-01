@@ -1,0 +1,8 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{lang.toString()}
+  - var items=["one", "two", "three"]
+  each item in items
+    p= item
