@@ -32,6 +32,7 @@ var User = new Schema({
   , profile : String
   , email   : String
   , alive   : Boolean
+  , admin   : {type: Boolean, default: false}
 });
 
 Comments.methods.findCreator = function (callback) {

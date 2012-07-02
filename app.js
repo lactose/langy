@@ -7,14 +7,15 @@ var express = require('express')
   , routes = require('./routes')
   , http = require('http')
   , mongoose = require('mongoose')
-  , eauth = require('everyauth')
+  , everyauth = require('everyauth')
   , util = require('util')
-  , Promise = eauth.Promise
-  , users = require('./models/users');
+  , Promise = everyauth.Promise
+  , users = require('./models/users')
+  , everyauthRoot = __dirname + '/..';
 
 require('./models/schema');
 
-eauth.twitter
+everyauth.twitter
   .consumerKey(process.env.LANGY_CKEY)
   .consumerSecret(process.env.LANGY_CSEC)
   .findOrCreateUser(function(session, accessToken, accessTokenSecret, twitterUserData) {
@@ -27,6 +28,8 @@ eauth.twitter
 
 var app = express();
 
+
+
 app.configure(function(){
   app.set('port', process.env.PORT || 3000);
   app.set('views', __dirname + '/views');
@@ -35,8 +38,8 @@ app.configure(function(){
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.cookieParser());
-  app.use(express.session({secret: "sa9f0ds129931d"}));
-  app.use(eauth.middleware());
+  app.use(express.session({secret: 'dadaism'}));
+  app.use(everyauth.middleware());
   app.use(express.methodOverride());
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
@@ -46,8 +49,6 @@ app.configure(function(){
 app.configure('development', function(){
   app.use(express.errorHandler());
 });
-
-
 
 app.get('/', routes.index);
 app.get('/:title', routes.finder);

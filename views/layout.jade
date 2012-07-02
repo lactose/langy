@@ -20,7 +20,7 @@ html
                 a(href='#') About
             ul#main-menu-right(class='nav pull-right')
               li
-                - if (!req.session.loggedIn)
+                - if (!everyauth.loggedIn)
                   a(href='/auth/twitter')
                     img(src='/images/sign-in-with-twitter-l-sm.png')
                 - else 
