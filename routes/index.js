@@ -9,9 +9,9 @@ var   mongoose = require('mongoose')
 var db = mongoose.connect('mongodb://localhost/langy');
 var langs = db.model('Lang');
 
-exports.index = function(req, res){
+exports.index = function(req, res) {
   langs.find(function(err, languages) {
-    res.render('index', {title: 'langy.io', lang: languages[0].title, eauth: eauth});
+    res.render('index', {title: 'langy.io', lang: languages[0].title, eauth: eauth, req: req});
   });
 };
 

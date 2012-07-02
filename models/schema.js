@@ -27,10 +27,10 @@ var Lang = new Schema({
 var User = new Schema({
     nick    : String
   , name    : String
-  , userid  : Number
+  , userid   : {type: Number, required: true, index: {unique: true, sparse: true} }
   , desc    : String
   , profile : String
-  , email   : {type: String, required: true, index: {unique: true, sparse: true} }
+  , email   : String
   , alive   : Boolean
 });
 

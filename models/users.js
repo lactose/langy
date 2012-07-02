@@ -16,11 +16,11 @@ exports.findOrCreateUserByTwitterData = function(twitterData, promise) {
       promise.fulfill(doc);
     } else {
       console.log("attempting to insert user");
-      var doc = new User();
-      doc.push({
+      var doc = new User({
         name: twitterData.name,
-        userid: twitterData.id_str, 
-        email: twitterData.email
+        userid: twitterData.id_str,
+        profile: twitterData.profile_image_url,
+        nick: twitterData.screen_name
       });
       doc.save(function(err) {
         if(err) {

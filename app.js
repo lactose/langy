@@ -19,6 +19,7 @@ eauth.twitter
   .consumerSecret(process.env.LANGY_CSEC)
   .findOrCreateUser(function(session, accessToken, accessTokenSecret, twitterUserData) {
     var promise = this.Promise();
+    //console.log(util.inspect(twitterUserData));
     users.findOrCreateUserByTwitterData(twitterUserData, promise);
     return promise;
   })
