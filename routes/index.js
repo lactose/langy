@@ -10,8 +10,12 @@ var db = mongoose.connect('mongodb://localhost/langy');
 var langs = db.model('Lang');
 
 exports.index = function(req, res) {
+  var user;
+  if(req.session.auth) {
+    user = req.session.auth.twitter.user.screen_name;
+  }
   langs.find(function(err, languages) {
-    res.render('index', {title: 'langy.io', lang: languages[0].title, everyauth: eauth});
+    res.render('index', {title: 'langy.io', lang: languages[0].title, everyauth: eauth, user: user, req: req});
   });
 };
 

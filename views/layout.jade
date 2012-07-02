@@ -20,11 +20,11 @@ html
                 a(href='#') About
             ul#main-menu-right(class='nav pull-right')
               li
-                - if (!everyauth.loggedIn)
+                - if (!req.loggedIn)
                   a(href='/auth/twitter')
                     img(src='/images/sign-in-with-twitter-l-sm.png')
                 - else 
-                  a(href='/deauth') Logged in as #{eauth.twitter.user.screen_name}
+                  a(href='/deauth') Logged in as #{user}
 
   
     div(class='container')
