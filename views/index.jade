@@ -1,8 +1,11 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{lang.toString()}
-  - var items=["one", "two", "three"]
-  each item in items
-    p= item
+  header(class='jumbotron subhead')
+    h1= lang
+  p(class='lead') Sun Microsystems, Inc.
+  section#desc
+    div(class='row')
+      div(class='span4') Here is a description
+      div(class='span4')
+      div(class='span4')

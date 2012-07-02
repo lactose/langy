@@ -9,11 +9,23 @@ html
     div(class='navbar navbar-fixed-top')
       div(class='navbar-inner')
         div(class='container')
-          a(class='btn btn-navbar' data-toggle='collapse' data-target='.nav-collapse')
+          a(class='btn btn-navbar', data-toggle='collapse', data-target='.nav-collapse')
             span(class='icon-bar')
             span(class='icon-bar')
             span(class='icon-bar')
-          a(class='brand' href='../') langy.io
+          a(class='brand', href='../') langy.io
           div#main-menu(class='nav-collapse')
-    div#container
+            ul#main-menu-left(class='nav')
+              li
+                a(href='#') About
+            ul#main-menu-right(class='nav pull-right')
+              li
+                - if (!eauth.loggedIn)
+                  a(href='/auth/twitter')
+                    img(src='/images/sign-in-with-twitter-l-sm.png')
+                - else 
+                  a(href='/deauth') Logged in as #{eauth.twitter.user.name}
+
+  
+    div(class='container')
       block content
