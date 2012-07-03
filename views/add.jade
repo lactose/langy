@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  section#form
+    div(class='row')
+      div(class='span12') 
+        form(class='form-horizontal', action='/add', method='post')
+          fieldset
+            legend= title
+            - var fields = {"pname": "Name", "pdesc": "Description", "ptype": "Type", "powner": "Owner"}
+            - for (var key in fields)
+              div(class='control-group')
+                label(class='control-label', for='#{key}')= fields[key] + " "
+                  - if (key=='pname')
+                    span(class='required-text') * 
+                div(class='controls')
+                  input#pname(name='pname', class='input-xlarge', type='text')
+            div(class='form-actions')
+              button(type='submit', class='btn') Submit
+

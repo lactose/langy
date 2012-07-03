@@ -1,3 +1,7 @@
 @import url(bootstrap.css);
 @import url(bootstrap-responsive.css);
 @import url(docs.css);
+
+.required-text {
+  color: #B94A48;
+}

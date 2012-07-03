@@ -20,7 +20,9 @@ exports.findOrCreateUserByTwitterData = function(twitterData, promise) {
         name: twitterData.name,
         userid: twitterData.id_str,
         profile: twitterData.profile_image_url,
-        nick: twitterData.screen_name
+        nick: twitterData.screen_name,
+        locale: twitterData.location,
+        desc: twitterData.description
       });
       doc.save(function(err) {
         if(err) {
