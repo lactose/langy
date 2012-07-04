@@ -54,7 +54,10 @@ app.get('/', routes.index);
 app.get('/lang/:title', routes.finder);
 app.get('/add', routes.add);
 app.post('/add', routes.add_post);
-
+app.get('/approve', routes.approve);
+app.get('/approval', routes.approve_list);
+app.put('/approve/:id', routes.approve_id);
+app.delete('/approve/:id', routes.disapprove_id);
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });

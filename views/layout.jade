@@ -24,7 +24,7 @@ html
                   a(href='/auth/twitter')
                     img(src='/images/sign-in-with-twitter-l-sm.png')
                 - else 
-                  a(href='/logout') Logged in as #{user}
+                  a(href='/logout') Logged in as #{user[0].nick}
 
   
     div(class='container')

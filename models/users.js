@@ -13,6 +13,7 @@ exports.findOrCreateUserByTwitterData = function(twitterData, promise) {
     if(doc && doc.length > 0) {
       console.log(doc);
       console.log("found user already in system");
+      exports.user_session = doc;
       promise.fulfill(doc);
     } else {
       console.log("attempting to insert user");
@@ -22,7 +23,8 @@ exports.findOrCreateUserByTwitterData = function(twitterData, promise) {
         profile: twitterData.profile_image_url,
         nick: twitterData.screen_name,
         locale: twitterData.location,
-        desc: twitterData.description
+        desc: twitterData.description,
+        admin: false
       });
       doc.save(function(err) {
         if(err) {
@@ -31,6 +33,7 @@ exports.findOrCreateUserByTwitterData = function(twitterData, promise) {
           promise.fail(err);
         } else {
           console.log("new user created!");
+          exports.user_session = doc;
           promise.fulfill(doc);
         }
       });

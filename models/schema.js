@@ -16,7 +16,7 @@ var Tutorial = new Schema({
 });
 
 var Lang = new Schema({
-    title   : String
+    title   : {type: String, required: true, index: {unique: true, sparse: true}}
   , desc    : String
   , type    : Number
   , owner   : String

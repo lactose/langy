@@ -14,7 +14,12 @@ block content
                   - if (key=='pname')
                     span(class='required-text') * 
                 div(class='controls')
-                  input#pname(name='pname', class='input-xlarge', type='text')
+                  - if (key=='ptype')
+                    select(name='#{key})
+                      each option in types 
+                        option(value='#{option._id}')= option.title
+                  - else
+                    input(name='#{key}', class='input-xlarge', type='text')
             div(class='form-actions')
               button(type='submit', class='btn') Submit
 
