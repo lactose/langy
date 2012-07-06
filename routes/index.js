@@ -79,15 +79,20 @@ exports.approve_list = function(req, res) {
   });
 };
 
-exports.langies = function(req, res) {
-  user = set_user(req);
+exports.lang_list = function(req, res) {
   langs.find({approved: true}, function(err, docs) {
     if(err) {
-      res.render('error', {title: 'Woopsy', req: req, user: user});
+      res.send(err);
     } else {
-      res.render('langies', {title: 'Projects', req: req, user: user, langs: docs});
+      res.send(docs);
     }
   });
+};
+
+
+exports.langies = function(req, res) {
+  user = set_user(req);
+  res.render('langies', {title: 'Projects', req: req, user: user});
 };
 
 

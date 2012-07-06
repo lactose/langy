@@ -52,6 +52,7 @@ app.configure('development', function(){
 app.get('/', routes.index);
 app.get('/lang/:title', routes.finder);
 app.get('/langies', routes.langies);
+app.put('/langies/list', routes.lang_list);
 app.get('/add', routes.add);
 app.post('/add', routes.add_post);
 app.get('/approve', routes.approve);
