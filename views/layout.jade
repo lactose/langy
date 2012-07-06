@@ -30,7 +30,8 @@ html
                   a(href='/logout') Logged in as #{user[0].nick}
 
   
-    div(class='container')
+    div#main(class='container')
+      div#alert
       - if (typeof note != 'undefined')
         div(class='flash alert alert-notice') #{note}
       block content

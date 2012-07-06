@@ -1,6 +1,6 @@
 function populate() {
   $.ajax({
-    url: '/langies/list',
+    url: '/projects/list',
     type: 'PUT',
     success: function(data) {
       var str = "";
@@ -16,11 +16,15 @@ function populate() {
 
 function vote(title) {
   $.ajax({
-    url: '/vote/lang/' + title,
+    url: '/vote/project/' + title,
     type: 'PUT',
     success: function(data) {
       console.log(data);
-      populate();
+      if(data.notice) {
+        $('div#alert').addClass('alert alert-notice flash').text(data.notice);        
+      } else {
+        populate();
+      }
     }
   });
 }

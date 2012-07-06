@@ -4,12 +4,15 @@
  */
 require('../models/schema.js');
 var userdata = require('../models/users.js');
-var   mongoose = require('mongoose');
+var mongoose = require('mongoose');
 var eauth = require('everyauth');
 
 var db = mongoose.connect('mongodb://localhost/langy');
-var langs = db.model('Lang');
-var type = db.model('Type');
+var   langs = db.model('Lang')
+    , type = db.model('Type')
+    , comments = db.model('Comment')
+    , tutorials = db.model('Tutorial')
+    , users = db.model('User');
 
 var user = '';
 
@@ -51,11 +54,14 @@ exports.add_post = function(req, res) {
 
 
 exports.finder = function(req, res){
+  user = set_user(req);
   langs.find({'title': req.params.title}, function(err, docs) {
-    if(docs && docs[0].title) {
-      res.render('index', {title: 'langy.io', lang: docs[0].title});
+    console.log(docs);
+    if(err || docs.length == 0) {
+      res.render('error', {title: 'langy.io', req: req, user: user});
     } else {
-      res.render('error', {title: 'langy.io'});
+      
+      res.render('lang', {title: docs.title, req: req, user: user, lang: docs[0]});
     }
   });
 };
@@ -80,7 +86,9 @@ exports.approve_list = function(req, res) {
 };
 
 exports.lang_list = function(req, res) {
-  langs.find({approved: true}, function(err, docs) {
+  var query = langs.find({approved: true});
+  query.sort('votes', -1);
+  query.exec(function(err, docs) {
     if(err) {
       res.send(err);
     } else {
@@ -120,10 +128,10 @@ exports.vote_lang = function(req, res) {
   vote(req, res, langs);
 };
 exports.vote_comment = function(req, res) {
-
+  vote(req, res, comments);
 };
 exports.vote_tutorial = function(req, res) {
-
+  vote(req, res, tutorials);
 };
 exports.disapprove_id = function(req, res) {
   user = set_user(req);
@@ -162,14 +170,14 @@ function vote(req, res, obj) {
     obj.update(query, update, options, function(err, numA) {
       if(err) {
         console.log(err);
-        res.send(err);
+        res.send({err: err});
       } else {
         console.log("Vote logged");
-        res.send(numA);
+        res.send({affected: numA});
       }
    });
   } else {
-    res.send([{}]);
+    res.send({notice: 'Please log in to vote.' });
   }
 
 }

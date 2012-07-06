@@ -1,11 +1,20 @@
 extends layout
 
 block content
+  script(src='/javascripts/details.js')
   header(class='jumbotron subhead')
-    h1= lang
-  p(class='lead') Sun Microsystems, Inc.
+    h1 #{lang.title}
+      - if (lang.voters.length > 0 && lang.voters.indexOf(user[0].nick) != -1)
+        span(class='badge badge-success')= lang.votes
+      - else 
+        span(class='badge no-voter')= lang.votes
+  p(class='lead')= lang.owner
   section#desc
     div(class='row')
-      div(class='span4') Here is a description
+      div(class='span4')
+        b= lang.type
+        br
+        p= lang.desc
       div(class='span4')
       div(class='span4')
+      input#langstore(type='hidden', value='#{lang.title}')

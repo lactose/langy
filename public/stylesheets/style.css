@@ -5,3 +5,7 @@
 .required-text {
   color: #B94A48;
 }
+
+.badge.no-voter:hover {
+  cursor: pointer;
+}
