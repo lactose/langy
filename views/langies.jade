@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  header(class='jumbotron subhead')
+    h1 Projects
+  p(class='lead') By Votes
+  section#desc
+    div(class='row')
+      div(class='span4')= JSON.stringify(langs)
+      div(class='span4')
+      div(class='span4')

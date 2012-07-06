@@ -2,11 +2,11 @@ var mongoose = require('mongoose')
   , Schema = mongoose.Schema;
 
 var Comment = new Schema({
-    title     : String
+    title     : {type: String, index: true}
   , body      : String
   , date      : {type: Date, default: Date.now}
   , votes     : {type: Number, default: 0}
-  , replies   : [Comment]  
+  , comments  : [Comment]  
 });
 
 var Tutorial = new Schema({
@@ -18,9 +18,10 @@ var Tutorial = new Schema({
 var Lang = new Schema({
     title   : {type: String, required: true, index: {unique: true, sparse: true}}
   , desc    : String
-  , type    : Number
+  , type    : String
   , owner   : String
   , votes   : {type: Number, default: 0}
+  , voters  : [User]
   , tuts    : [Tutorial]
   , comments: [Comment]
   , approved: Boolean

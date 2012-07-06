@@ -17,7 +17,10 @@ html
           div#main-menu(class='nav-collapse')
             ul#main-menu-left(class='nav')
               li
-                a(href='#') About
+                a(href='/add') Add Project
+              - if (user[0].admin == true) 
+                li 
+                  a(href='/approve') Approve
             ul#main-menu-right(class='nav pull-right')
               li
                 - if (!req.loggedIn)
@@ -28,4 +31,6 @@ html
 
   
     div(class='container')
+      - if (typeof note != 'undefined')
+        div(class='flash alert alert-notice') #{note}
       block content
