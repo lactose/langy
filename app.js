@@ -9,18 +9,22 @@ var express = require('express')
   , mongoose = require('mongoose')
   , everyauth = require('everyauth')
   , util = require('util')
+  , fs = require('fs')
   , Promise = everyauth.Promise
+  , cluster = require('cluster')
+  , numCPUs = require('os').cpus().length
   , users = require('./models/users')
+  , RedisStore = require('connect-redis')(express)
   , everyauthRoot = __dirname + '/..';
 
 require('./models/schema');
+
 
 everyauth.twitter
   .consumerKey(process.env.LANGY_CKEY)
   .consumerSecret(process.env.LANGY_CSEC)
   .findOrCreateUser(function(session, accessToken, accessTokenSecret, twitterUserData) {
     var promise = this.Promise();
-    //console.log(util.inspect(twitterUserData));
     users.findOrCreateUserByTwitterData(twitterUserData, promise);
     return promise;
   })
@@ -31,14 +35,13 @@ var app = express();
 
 
 app.configure(function(){
-  app.set('port', process.env.PORT || 3000);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.favicon());
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.cookieParser());
-  app.use(express.session({secret: 'dadaism'}));
+  app.use(express.session({ secret: 'dadaism', store: new RedisStore, cookie: { maxAge: 60000*( (60*24) * 30)} })); // 30 days
   app.use(everyauth.middleware());
   app.use(express.methodOverride());
   app.use(app.router);
@@ -46,7 +49,15 @@ app.configure(function(){
 });
 
 app.configure('development', function(){
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
+  app.set('port', 3000);
+});
+
+app.configure('production', function() {
+  var logFile = fs.createWriteStream('logs/production.log', {flags: 'a'});
   app.use(express.errorHandler());
+  app.use(express.logger({stream: logFile}));
+  app.set('port', '/tmp/langy.sock');
 });
 
 app.get('/', routes.index);
@@ -63,6 +74,27 @@ app.put('/vote/project/:id', routes.vote_lang);
 app.put('/vote/comment/:id', routes.vote_comment);
 app.put('/vote/tutorial/:id', routes.vote_tutorial);
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log("Express server listening on port " + app.get('port'));
-});
+if(cluster.isMaster) {
+  for(var i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+
+  cluster.on('exit', function(worker, code, signal) {
+    console.log('worker ' + worker.pid + ' died');
+  });
+  cluster.on('death', function(worker) {
+    cluster.fork();
+    console.log('worker ' + worker.pid + ' revived');
+  });
+  cluster.on('unhandledException', function(worker) {
+    console.log("shit");
+  });
+} else {
+  http.createServer(app).listen(app.get('port'), function(){
+    if( isNaN(app.get('port')) ){
+      fs.chmod(app.get('port'), 0775);
+    }
+    console.log("Express server listening on port " + app.get('port'));
+  });
+}
+
