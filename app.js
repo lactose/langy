@@ -10,15 +10,22 @@ var express = require('express')
   , everyauth = require('everyauth')
   , util = require('util')
   , fs = require('fs')
+  , redis = require('redis')
   , Promise = everyauth.Promise
   , cluster = require('cluster')
   , numCPUs = require('os').cpus().length
   , users = require('./models/users')
   , RedisStore = require('connect-redis')(express)
+  , debug
   , everyauthRoot = __dirname + '/..';
 
+var redisConfig = fs.readFileSync(__dirname + '/config/redis.conf', 'UTF-8');
+var appConfig = JSON.parse(fs.readFileSync(__dirname + 'config/app.json', 'UTF-8'))
 require('./models/schema');
 
+if(appConfig.DEBUG) {
+  debug = appConfig.DEBUG;
+}
 
 everyauth.twitter
   .consumerKey(process.env.LANGY_CKEY)
@@ -30,11 +37,48 @@ everyauth.twitter
   })
   .redirectPath('/');
 
+// redis stuff
+
+function findRedisPassword(){
+
+  var pw = '';
+
+  // bet you didn't know you could do that with String#replace(), eh?
+  redisConfig.replace(/(masterauth+\s)+(.*)+\s/, function( line, masterauthString, password){
+    pw = password;
+  });
+
+  return pw;
+
+}
+
+function initRedis(){
+  
+  redisClient = redis.createClient()
+
+  redisClient.on("error", function (err) {
+      console.log("Redis connection error to " + redisClient.host + ":" + redisClient.port + " - " + err);
+  });
+
+  redisClient.on("connect", function (err){
+    if(err) console.error(err)
+    else{
+      redisClient.auth(findRedisPassword(), function(){
+        debug && console.log('Authenticated to redis.')
+      })
+    }
+  });
+
+  RedisStore = require('connect-redis')(express);
+  
+}
+
 var app = express();
 
 
 
 app.configure(function(){
+  initRedis();
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.favicon());
@@ -90,11 +134,17 @@ if(cluster.isMaster) {
     console.log("shit");
   });
 } else {
-  http.createServer(app).listen(app.get('port'), function(){
+  var server = http.createServer(app).listen(app.get('port'), function(){
     if( isNaN(app.get('port')) ){
-      fs.chmod(app.get('port'), 0775);
+      fs.chmod(app.get('port'), 0777);
     }
     console.log("Express server listening on port " + app.get('port'));
+  });
+
+  server.on('close', function() {
+    fs.unlink('/tmp/langy.sock', function() {
+      //nothin 
+    });
   });
 }
 

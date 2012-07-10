@@ -55,6 +55,10 @@ Lang.path('title').set(function(v) {
   return v.toLowerCase();
 });
 
+User.methods.findById = function(id_str, callback) {
+  return this.find({userid: id_str}, callback);
+}
+
 
 mongoose.model('Lang', Lang);
 mongoose.model('User', User);
