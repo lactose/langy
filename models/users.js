@@ -41,4 +41,17 @@ exports.findOrCreateUserByTwitterData = function(twitterData, promise) {
   });
 };
       
-  
+/*module.exports = {
+  get_user: function(req, callback) {
+   var criteria = "";
+   if(req.session.auth) {
+     console.log("found session");
+     criteria =  req.session.auth.twitter.user.id_str;
+     console.log(criteria);
+   } else {
+     criteria = "-1";
+   }
+   var query = User.find({userid: criteria});
+   query.exec(callback);
+  }
+}*/

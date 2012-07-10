@@ -15,12 +15,18 @@ var   langs = db.model('Lang')
     , users = db.model('User');
 
 var user = '';
+var nobody = [{ nick: '', admin: false}]
 
 exports.index = function(req, res) {
-  user = set_user(req);
-  langs.find(function(err, languages) {
-    res.render('index', {title: 'langy.io', everyauth: eauth, user: user, req: req});
-  });
+  if(req.loggedIn) {
+    users.find({userid: req.session.auth.twitter.user.id_str}, function(err, docs) {
+      console.log(docs);
+      res.render('index', {title: 'langy.io', user: docs, req: req});
+    });
+  } else {
+    res.render('error', {title: 'error', user: nobody, req: req});
+  }
+
 };
 
 exports.add = function(req, res) {
@@ -152,13 +158,22 @@ exports.disapprove_id = function(req, res) {
 };
 
 function set_user(req) {
-  if(req.session.auth) {
-    return userdata.user_session;
-  } 
-  return [{
-    nick: "",
-    admin: false
-  }]
+  /*if(req.session.auth) {
+    userdata.get_user(function(err, docs) {
+      if(err && err.length > 0) {
+        console.log("found error");
+        console.log(err);
+        return [{
+          nick: "",
+          admin: false
+        }]
+      } else {
+        console.log("returning user doc");
+        console.log(JSON.stringify(doc));
+        return doc;
+      }
+    });
+  } */
 }
 
 function vote(req, res, obj) {
