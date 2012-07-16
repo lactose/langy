@@ -20,7 +20,7 @@ var express = require('express')
   , everyauthRoot = __dirname + '/..';
 
 var redisConfig = fs.readFileSync(__dirname + '/config/redis.conf', 'UTF-8');
-var appConfig = JSON.parse(fs.readFileSync(__dirname + 'config/app.json', 'UTF-8'))
+var appConfig = JSON.parse(fs.readFileSync(__dirname + '/config/app.json', 'UTF-8'))
 require('./models/schema');
 
 if(appConfig.DEBUG) {

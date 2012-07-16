@@ -18,26 +18,23 @@ var user = '';
 var nobody = [{ nick: '', admin: false}]
 
 exports.index = function(req, res) {
-  if(req.loggedIn) {
-    users.find({userid: req.session.auth.twitter.user.id_str}, function(err, docs) {
-      console.log(docs);
-      res.render('index', {title: 'langy.io', user: docs, req: req});
-    });
-  } else {
-    res.render('error', {title: 'error', user: nobody, req: req});
-  }
-
+  set_user(req, function(err, docs) {
+    res.render('index', {title: 'langy.io', user: docs, req: req});
+  });
 };
 
 exports.add = function(req, res) {
-  user = set_user(req);
-  type.find(function(err, types) {
-    res.render('add', {title: 'Add a Project', user: user, req: req, types: types});
+  set_user(req, function(err, docs) {
+    type.find(function(err, types) {
+      res.render('add', {title: 'Add a Project', user: docs, req: req, types: types});
+    });
   });
 }
 
 exports.add_post = function(req, res) {
-  user = set_user(req);
+  set_user(req, function(err, docs) { 
+    //done
+  });
   var doc = new langs({
     title: req.body.pname,
     desc: req.body.pdesc,
@@ -157,7 +154,7 @@ exports.disapprove_id = function(req, res) {
   }
 };
 
-function set_user(req) {
+function set_user(req, callback) {
   /*if(req.session.auth) {
     userdata.get_user(function(err, docs) {
       if(err && err.length > 0) {
@@ -174,6 +171,19 @@ function set_user(req) {
       }
     });
   } */
+  if(req.loggedIn) {
+    users.find({userid: req.session.auth.twitter.user.id_str}, function(err, docs) {
+      console.log("found user");
+      console.log(docs);
+      callback(err, docs);
+    });
+  } else {
+   callback("",  [{
+    nick: "",
+    admin: false
+   }]);
+  }
+
 }
 
 function vote(req, res, obj) {
