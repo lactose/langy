@@ -1,7 +1,7 @@
+/*--------------------------------*\
+ * index of routes
+ * -------------------------------*/
 
-/*
- * GET home page.
- */
 require('../models/schema.js');
 var userdata = require('../models/users.js');
 var mongoose = require('mongoose');
@@ -15,11 +15,14 @@ var   langs = db.model('Lang')
     , users = db.model('User');
 
 var user = '';
-var nobody = [{ nick: '', admin: false}]
+var nobody = { nick: '', admin: false}
 
 exports.index = function(req, res) {
-  set_user(req, function(err, docs) {
-    res.render('index', {title: 'langy.io', user: docs, req: req});
+  user = get_user(req);
+  res.render('index', {
+      title: 'langy.io'
+    , user: user 
+    , req: req
   });
 };
 
@@ -155,35 +158,26 @@ exports.disapprove_id = function(req, res) {
 };
 
 function set_user(req, callback) {
-  /*if(req.session.auth) {
-    userdata.get_user(function(err, docs) {
-      if(err && err.length > 0) {
-        console.log("found error");
-        console.log(err);
-        return [{
-          nick: "",
-          admin: false
-        }]
-      } else {
-        console.log("returning user doc");
-        console.log(JSON.stringify(doc));
-        return doc;
-      }
-    });
-  } */
   if(req.loggedIn) {
     users.find({userid: req.session.auth.twitter.user.id_str}, function(err, docs) {
-      console.log("found user");
-      console.log(docs);
       callback(err, docs);
     });
   } else {
-   callback("",  [{
-    nick: "",
-    admin: false
-   }]);
+    callback("",  [{
+      nick: "",
+      admin: false
+    }]);
   }
+}
 
+function get_user(req) {
+  if(req.loggedIn) {
+    return req.session.auth.twitter.user;
+  } 
+  return {
+      nick: ""
+    , admin: false
+  }
 }
 
 function vote(req, res, obj) {

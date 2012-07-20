@@ -2,6 +2,14 @@
 @import url(bootstrap-responsive.css);
 @import url(docs.css);
 
+/*-----------------------------*\
+ * CONTENTS
+ * ----------------------------*/
+/*
+ * RESET
+ * NAV
+ */
+
 .required-text {
   color: #B94A48;
 }
@@ -9,3 +17,18 @@
 .badge.no-voter:hover {
   cursor: pointer;
 }
+
+/*-----------------------------*\
+ * NAV
+ * ----------------------------*/
+img.avatar {
+  -webkit-border-radius:4px;
+     -moz-border-radius:4px;
+          border-radius:4px;
+}
+
+span.avatar-text {
+  padding-left: 3px;
+  font-weight: bold;
+}
+

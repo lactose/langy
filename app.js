@@ -105,15 +105,17 @@ app.configure('production', function() {
 });
 
 app.get('/', routes.index);
-app.get('/projects/find/:title', routes.finder);
-app.get('/projects', routes.langies);
-app.put('/projects/list', routes.lang_list);
 app.get('/add', routes.add);
 app.post('/add', routes.add_post);
+app.get('/admin', routes.admin);
 app.get('/approve', routes.approve);
 app.get('/approval', routes.approve_list);
 app.put('/approve/:id', routes.approve_id);
 app.delete('/approve/:id', routes.disapprove_id);
+app.get('/projects/find/:title', routes.finder);
+app.get('/projects', routes.langies);
+app.put('/projects/list', routes.lang_list);
+app.get('/user/:id', routes.user_profile);
 app.put('/vote/project/:id', routes.vote_lang);
 app.put('/vote/comment/:id', routes.vote_comment);
 app.put('/vote/tutorial/:id', routes.vote_tutorial);

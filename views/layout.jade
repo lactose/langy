@@ -18,18 +18,16 @@ html
             ul#main-menu-left(class='nav')
               li
                 a(href='/add') Add Project
-              - if (user[0].admin == true) 
-                li 
-                  a(href='/approve') Approve
             ul#main-menu-right(class='nav pull-right')
               li
                 - if (!req.loggedIn)
                   a(href='/auth/twitter')
                     img(src='/images/sign-in-with-twitter-l-sm.png')
                 - else 
-                  a(href='/logout') Logged in as #{user[0].nick}
+                  a(href='/user/#{user.screen_name}') 
+                    img(src='#{user.profile_image_url}', height='20', width='20', class='avatar') 
+                    span(class='avatar-text')= user.screen_name
 
-  
     div#main(class='container')
       div#alert
       - if (typeof note != 'undefined')
