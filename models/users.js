@@ -1,5 +1,8 @@
 var mongoose = require('mongoose');
-var db = mongoose.connect('mongodb://localhost/langy');
+var everyauth = require('everyauth');
+var fs = require('fs');
+var appConfig = JSON.parse(fs.readFileSync(__dirname + '/../config/app.json', 'UTF-8'))
+var db = mongoose.connect('mongodb://' + appConfig.DB_SERVER + '/langy');
 var User = db.model('User');
 
 exports.findOrCreateUserByTwitterData = function(twitterData, promise) {
@@ -55,3 +58,4 @@ exports.findOrCreateUserByTwitterData = function(twitterData, promise) {
    query.exec(callback);
   }
 }*/
+

@@ -5,9 +5,11 @@
 require('../models/schema.js');
 var userdata = require('../models/users.js');
 var mongoose = require('mongoose');
+var fs = require('fs');
 var eauth = require('everyauth');
+var appConfig = JSON.parse(fs.readFileSync(__dirname + '/../config/app.json', 'UTF-8'))
 
-var db = mongoose.connect('mongodb://localhost/langy');
+var db = mongoose.connect('mongodb://' + appConfig.DB_SERVER + '/langy');
 var   langs = db.model('Lang')
     , type = db.model('Type')
     , comments = db.model('Comment')

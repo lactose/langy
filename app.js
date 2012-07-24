@@ -39,6 +39,11 @@ everyauth.twitter
 
 // redis stuff
 
+everyauth.everymodule.findUserById( function (userId, callback) {
+  users.findById(userId, callback);
+  // callback has the signature, function (err, user) {...}
+});
+
 function findRedisPassword(){
 
   var pw = '';
@@ -84,15 +89,15 @@ app.configure(function(){
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.cookieParser());
-  app.use(everyauth.middleware());
   app.use(express.methodOverride());
-  app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });
 
 app.configure('development', function(){
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
   app.use(express.session({secret: 'dadaism'}));
+  app.use(everyauth.middleware());
+  app.use(app.router);
   app.set('port', 3000);
 });
 
@@ -101,6 +106,8 @@ app.configure('production', function() {
   app.use(express.session({ secret: 'dadaism', store: new RedisStore, cookie: { maxAge: 60000*( (60*24) * 30)} })); // 30 days
   var logFile = fs.createWriteStream(__dirname + '/logs/production.log', {flags: 'a'});
   app.use(express.errorHandler());
+  app.use(everyauth.middleware());
+  app.use(app.router);
   app.use(express.logger({stream: logFile}));
   app.set('port', '/tmp/langy.sock');
 });
