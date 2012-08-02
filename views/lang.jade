@@ -4,7 +4,7 @@ block content
   script(src='/javascripts/details.js')
   header(class='jumbotron subhead')
     h1 #{lang.title}
-      - if (lang.voters.length > 0 && lang.voters.indexOf(user[0].nick) != -1)
+      - if (lang.voters.length > 0 && lang.voters.indexOf(user.screen_name) != -1)
         span(class='badge badge-success')= lang.votes
       - else 
         span(class='badge no-voter')= lang.votes

@@ -224,8 +224,8 @@ function get_user(req) {
 function vote(req, res, obj) {
   user = get_user(req);
   if(req.session.auth) {
-    var query = { title: req.params.id, voters: { '$ne': user.nick }}
-    ,   update = {'$push' : {'voters': user.nick }, '$inc': {votes: 1}}
+    var query = { title: req.params.id, voters: { '$ne': user.screen_name }}
+    ,   update = {'$push' : {'voters': user.screen_name }, '$inc': {votes: 1}}
     ,   options = {};
     obj.update(query, update, options, function(err, numA) {
       if(err) {

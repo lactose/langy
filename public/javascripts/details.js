@@ -8,6 +8,7 @@ function vote(title) {
     url: '/vote/project/' + title,
     type: 'PUT',
     success: function(result) {
+      console.log(JSON.stringify(result));
       var n = $('.badge.no-voter').text();
       n = Number(n);
       n++;
