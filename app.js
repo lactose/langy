@@ -95,7 +95,7 @@ app.configure(function(){
 
 app.configure('development', function(){
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
-  app.use(express.session({secret: 'dadaism'}));
+  app.use(express.session({secret: 'dadaism', cookie: { maxAge: 60000*( (60*24) * 30)} }));
   app.use(everyauth.middleware());
   app.use(app.router);
   app.set('port', 3000);

@@ -29,17 +29,19 @@ exports.index = function(req, res) {
 };
 
 exports.add = function(req, res) {
-  set_user(req, function(err, docs) {
-    type.find(function(err, types) {
-      res.render('add', {title: 'Add a Project', user: docs, req: req, types: types});
+  user = get_user(req);
+  type.find(function(err, types) {
+    res.render('add', {
+        title: 'Add a Project'
+      , user: user
+      , req: req
+      , types: types
     });
   });
 }
 
 exports.add_post = function(req, res) {
-  set_user(req, function(err, docs) { 
-    //done
-  });
+  user = get_user(req);
   var doc = new langs({
     title: req.body.pname,
     desc: req.body.pdesc,
@@ -51,44 +53,80 @@ exports.add_post = function(req, res) {
   doc.save(function(err) {
     if(err) {
       console.log(err);
-      res.render('error', {title: 'langy.io', user: user, req: req});
+      res.render('error', {
+          title: 'langy.io'
+        , user: user
+        , req: req
+      });
     } else {
       console.log(doc);
-      console.log("Saved project");
-      res.render('index', {title: 'langy.io', user: user, req: req, note: 'Project submitted'});
+      res.render('index', {
+          title: 'langy.io'
+        , user: user
+        , req: req
+        , note: 'Project submitted'
+      });
     }
   });
 }
 
 
 exports.finder = function(req, res){
-  user = set_user(req);
+  user = get_user(req);
   langs.find({'title': req.params.title}, function(err, docs) {
     console.log(docs);
     if(err || docs.length == 0) {
-      res.render('error', {title: 'langy.io', req: req, user: user});
+      res.render('error', {
+          title: 'langy.io'
+        , req: req
+        , user: user
+      });
     } else {
-      
-      res.render('lang', {title: docs.title, req: req, user: user, lang: docs[0]});
+      res.render('lang', {
+          title: docs.title
+        , req: req
+        , user: user
+        , lang: docs[0]
+      });
     }
   });
 };
 
 exports.approve = function(req, res){
-  user = set_user(req);
-  if(user[0] && user[0].admin == true) {
-    res.render('approve', {title: 'Approve', user: user, req: req});
-  } else {
-    res.render('error', {title: 'langy.io', req: req, user: user});
-  }
+  user = get_user(req);
+  set_user(req, function(err, dbuser) {
+    if(dbuser.admin == true) {
+      res.render('approve', {
+          title: 'Approve'
+        , user: user
+        , req: req
+      });
+    } else {
+      res.render('error', {
+          title: 'langy.io'
+        , req: req
+        , user: user
+      });
+    }
+  });
 };
 
 exports.approve_list = function(req, res) {
-  langs.find({approved: false}, function(err, docs) {
-    if(err) {
-      res.send(err);
+  set_user(req, function(err, user) {
+    if(user.admin == true) {
+      langs.find({approved: false}, function(error, docs) {
+        if(error) {
+          res.send(error);
+        } else {
+          res.send(docs);
+        }
+      });
     } else {
-      res.send(docs);
+      res.render('error', {
+          title: 'Insufficient privileges!'
+        , req: req
+        , user: user
+      });
     }
   });
 };
@@ -107,30 +145,30 @@ exports.lang_list = function(req, res) {
 
 
 exports.langies = function(req, res) {
-  user = set_user(req);
+  user = get_user(req);
   res.render('langies', {title: 'Projects', req: req, user: user});
 };
 
 
 exports.approve_id = function(req, res) {
-  user = set_user(req);
-  if(user[0].admin == true) {
-    var query = { title: req.params.id }
-    ,   update = { approved: true}
-    ,   options = { };
-    langs.update(query, update, options, function(err, numA) {
-      if(err) {
-        console.log(err);
-        res.send(err);
-      } else {
-        console.log("Updated " + numA + " document(s).");
-        res.send(numA);
-      }
-    });
-  } else {
-    res.render('error', {title: 'Not admin user', req: req});
-  }
-
+  set_user(req, function(err, user) {
+    if(user.admin == true) {
+      var query = { title: req.params.id }
+      ,   update = { approved: true}
+      ,   options = { };
+      langs.update(query, update, options, function(err, numA) {
+        if(err) {
+          console.log(err);
+          res.send(err);
+        } else {
+          console.log("Updated " + numA + " document(s).");
+          res.send(numA);
+        }
+      });
+    } else {
+      res.render('error', {title: 'Not admin user', req: req, user: user});
+    }
+  });
 };
 exports.vote_lang = function(req, res) {
   vote(req, res, langs);
@@ -142,33 +180,34 @@ exports.vote_tutorial = function(req, res) {
   vote(req, res, tutorials);
 };
 exports.disapprove_id = function(req, res) {
-  user = set_user(req);
-  if(user[0].admin == true) {
-    var query = { title: req.params.id };
-    langs.remove(query, function(err, result) {
-      if(err) {
-        console.log(err);
-        res.send(err);
-      } else {
-        console.log("Deleted " + result + " document(s).");
-        res.send(result);
-      }
-    });
-  } else {
-    res.render('error', {title: 'Not admin user', req: req});
-  }
+  set_user(req, function(err, user) {
+    if(user.admin == true) {
+      var query = { title: req.params.id };
+      langs.remove(query, function(err, result) {
+        if(err) {
+          console.log(err);
+          res.send(err);
+        } else {
+          console.log("Deleted " + result + " document(s).");
+          res.send(result);
+        }
+      });
+    } else {
+      res.render('error', {title: 'Not admin user', req: req, user: user});
+    }
+  });
 };
 
 function set_user(req, callback) {
   if(req.loggedIn) {
     users.find({userid: req.session.auth.twitter.user.id_str}, function(err, docs) {
-      callback(err, docs);
+      callback(err, docs[0]);
     });
   } else {
-    callback("",  [{
+    callback("",  {
       nick: "",
       admin: false
-    }]);
+    });
   }
 }
 
@@ -183,10 +222,10 @@ function get_user(req) {
 }
 
 function vote(req, res, obj) {
-  user = set_user(req);
+  user = get_user(req);
   if(req.session.auth) {
-    var query = { title: req.params.id, voters: { '$ne': user[0].nick }}
-    ,   update = {'$push' : {'voters': user[0].nick }, '$inc': {votes: 1}}
+    var query = { title: req.params.id, voters: { '$ne': user.nick }}
+    ,   update = {'$push' : {'voters': user.nick }, '$inc': {votes: 1}}
     ,   options = {};
     obj.update(query, update, options, function(err, numA) {
       if(err) {
