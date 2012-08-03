@@ -32,3 +32,13 @@ span.avatar-text {
   font-weight: bold;
 }
 
+/*-----------------------------*\
+ * TYPOGRAPHY
+ * ----------------------------*/
+.error-soft {
+  color: #b94a48;
+  text-decoration: none;
+}
+.error-soft:hover {
+  text-decoration: none;
+}

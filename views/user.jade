@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  script(src='/javascripts/user.js')
+  section#desc
+    div(class='row')
+      div(class='span4') &nbsp;
+      div(class='span4')
+        h2
+          img(src='#{person.profile}', class='avatar', width='25', height='25')
+          span= person.nick
+        - if (dbuser.admin == true)
+          a(href='/admin', class='error-soft') Admin
+        - else
+          p(class='error-soft') Admin
+          p= JSON.stringify(dbuser)
+          p= person.locale
+      div(class='span4') &nbsp;

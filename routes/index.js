@@ -28,6 +28,30 @@ exports.index = function(req, res) {
   });
 };
 
+exports.admin = function(req, res) {
+  user = get_user(req);
+  res.render('admin', {
+      title: 'langy.io'
+    , user: user 
+    , req: req
+  });
+};
+
+exports.user_profile = function(req, res) {
+  user = get_user(req);
+  set_user(req, function(err, dbuser) {
+    users.find({'nick': req.params.id}, function(err, people) {
+      res.render('user', {
+          title: 'User Profile'
+        , user: user 
+        , dbuser: dbuser
+        , req: req
+        , person: people[0]
+      });
+    });
+  });
+};
+
 exports.add = function(req, res) {
   user = get_user(req);
   type.find(function(err, types) {
