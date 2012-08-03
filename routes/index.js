@@ -30,10 +30,20 @@ exports.index = function(req, res) {
 
 exports.admin = function(req, res) {
   user = get_user(req);
-  res.render('admin', {
-      title: 'langy.io'
-    , user: user 
-    , req: req
+  set_user(req, function(err, dbuser) {
+    if(dbuser.admin) {
+      res.render('admin', {
+          title: 'langy.io'
+        , user: user 
+        , req: req
+      });
+    } else {
+      res.render('error', {
+          title: 'langy.io'
+        , user: user 
+        , req: req
+      });
+    }
   });
 };
 
